@@ -1,129 +1,168 @@
+// =================================================================
+// CONFIGURATION
+// =================================================================
+const CONFIG = {
+  SPREADSHEET_ID: '10BHEHZrXtgIpfVqIJBLZvFGuavw2ge-Xr6GCDNycAs4',
+  DATA_SHEET_NAME: 'Sheet1',
+  LOG_SHEET_NAME: 'Sheet2',
+  CONFIG_SHEET_NAME: 'Sheet3',
+  PDF_FOLDER_ID: '1e8dgi8QcqC3JOfvg-krN6qyxDqnc92gj'
+};
+
+// =================================================================
+// MAIN FUNCTIONS
+// =================================================================
+
+/**
+ * Serves the HTML file for the web app.
+ * @returns {HtmlOutput} The HTML output for the web app.
+ */
 function doGet() {
-    return HtmlService.createHtmlOutputFromFile('index');
+  return HtmlService.createHtmlOutputFromFile('index');
 }
 
+/**
+ * Fetches branch and item data from the configuration sheet.
+ * @returns {object} An object containing the branches and items.
+ */
 function getBranchAndItemData() {
-    try {
-        const spreadsheetId = '10BHEHZrXtgIpfVqIJBLZvFGuavw2ge-Xr6GCDNycAs4';
-        const sheet = SpreadsheetApp
-            .openById(spreadsheetId)
-            .getSheetByName('Sheet3');
-
-        if (!sheet) {
-            throw new Error('Sheet3 not found. Please create it with columns: Branch Name, Branch Code, Item Name.');
-        }
-
-        const data = sheet.getDataRange().getValues();
-        if (data.length <= 1) {
-            throw new Error('Sheet3 is empty or contains only headers.');
-        }
-
-        const branches = [];
-        const items = new Set();
-        data.slice(1).forEach(row => { // Skip header row
-            const branchName = row[0]?.toString().trim();
-            const branchCode = row[1]?.toString().trim();
-            const itemName = row[2]?.toString().trim();
-
-            if (branchName && branchCode && !branches.some(b => b.name === branchName)) {
-                branches.push({ name: branchName, code: branchCode });
-            }
-            if (itemName) {
-                items.add(itemName);
-            }
-        });
-
-        if (branches.length === 0) {
-            throw new Error('No valid branch data found in Sheet3.');
-        }
-
-        Logger.log('Fetched branches: ' + JSON.stringify(branches));
-        Logger.log('Fetched items: ' + JSON.stringify(Array.from(items)));
-
-        return {
-            branches: branches,
-            items: Array.from(items)
-        };
-    } catch (error) {
-        Logger.log('Error in getBranchAndItemData: ' + error.toString());
-        throw new Error('Failed to fetch branch/item data: ' + error.message);
+  try {
+    const sheet = getSheet(CONFIG.CONFIG_SHEET_NAME);
+    if (!sheet) {
+      throw new Error(`Sheet '${CONFIG.CONFIG_SHEET_NAME}' not found. Please create it with columns: Branch Name, Branch Code, Item Name.`);
     }
+
+    const data = sheet.getDataRange().getValues();
+    if (data.length <= 1) {
+      throw new Error(`Sheet '${CONFIG.CONFIG_SHEET_NAME}' is empty or contains only headers.`);
+    }
+
+    const branches = [];
+    const items = new Set();
+    data.slice(1).forEach(row => { // Skip header row
+      const branchName = row[0]?.toString().trim();
+      const branchCode = row[1]?.toString().trim();
+      const itemName = row[2]?.toString().trim();
+
+      if (branchName && branchCode && !branches.some(b => b.name === branchName)) {
+        branches.push({ name: branchName, code: branchCode });
+      }
+      if (itemName) {
+        items.add(itemName);
+      }
+    });
+
+    if (branches.length === 0) {
+      throw new Error(`No valid branch data found in '${CONFIG.CONFIG_SHEET_NAME}'.`);
+    }
+
+    Logger.log('Fetched branches: ' + JSON.stringify(branches));
+    Logger.log('Fetched items: ' + JSON.stringify(Array.from(items)));
+
+    return {
+      branches: branches,
+      items: Array.from(items)
+    };
+  } catch (error) {
+    Logger.log('Error in getBranchAndItemData: ' + error.toString());
+    throw new Error('Failed to fetch branch/item data: ' + error.message);
+  }
 }
 
+/**
+ * Saves the requisition data, creates a PDF, and logs the details.
+ * @param {Array} data The requisition data.
+ * @param {string} branchName The name of the branch.
+ * @param {string} branchCode The code of the branch.
+ * @param {string} currentDate The current date.
+ * @param {string} requisitionBy The name of the person making the requisition.
+ * @returns {object} An object indicating the success or failure of the operation.
+ */
 function saveRequisition(data, branchName, branchCode, currentDate, requisitionBy) {
-    try {
-        Logger.log('Starting saveRequisition function...');
+  try {
+    Logger.log('Starting saveRequisition function...');
 
-        const requisitionNo = generateRequisitionNo(branchCode);
-        Logger.log('Generated Requisition Number: ' + requisitionNo);
+    const requisitionNo = generateRequisitionNo(branchCode);
+    Logger.log('Generated Requisition Number: ' + requisitionNo);
 
-        const sheet = SpreadsheetApp
-            .openById('10BHEHZrXtgIpfVqIJBLZvFGuavw2ge-Xr6GCDNycAs4')
-            .getSheetByName('Sheet1');
+    const dataSheet = getSheet(CONFIG.DATA_SHEET_NAME);
+    if (!dataSheet) throw new Error(`Sheet '${CONFIG.DATA_SHEET_NAME}' not found.`);
 
-        if (!sheet) throw new Error('Sheet1 not found. Please check the sheet name.');
+    const rows = data.map(row => [
+      requisitionNo, currentDate, branchName, branchCode,
+      row.courseType, row.item, row.level, row.batchNo, row.quantity, row.remarks || '',
+      requisitionBy
+    ]);
+    dataSheet.getRange(dataSheet.getLastRow() + 1, 1, rows.length, rows[0].length).setValues(rows);
+    Logger.log(`Data saved to '${CONFIG.DATA_SHEET_NAME}'.`);
 
-        const rows = data.map(row => [
-            requisitionNo, currentDate, branchName, branchCode,
-            row.courseType, row.item, row.level, row.batchNo, row.quantity, row.remarks || '',
-            requisitionBy
-        ]);
-        sheet.getRange(sheet.getLastRow() + 1, 1, rows.length, rows[0].length).setValues(rows);
-        Logger.log('Data saved to Sheet1.');
+    const pdfBase64 = createPdf(data, branchName, branchCode, requisitionNo, currentDate, requisitionBy);
+    Logger.log('PDF generated successfully.');
 
-        const pdfBase64 = createPdf(data, branchName, branchCode, requisitionNo, currentDate, requisitionBy);
-        Logger.log('PDF generated successfully.');
+    const folder = DriveApp.getFolderById(CONFIG.PDF_FOLDER_ID);
+    if (!folder) throw new Error('Google Drive folder not found. Please check the folder ID in CONFIG.');
+    Logger.log('Folder accessed successfully: ' + folder.getName());
 
-        const folderId = '1e8dgi8QcqC3JOfvg-krN6qyxDqnc92gj';
-        const folder = DriveApp.getFolderById(folderId);
-        if (!folder) throw new Error('Google Drive folder not found. Please check the folder ID.');
-        Logger.log('Folder accessed successfully: ' + folder.getName());
+    const fileName = `Requisition_${requisitionNo}.pdf`;
+    const fileBlob = Utilities.newBlob(Utilities.base64Decode(pdfBase64), 'application/pdf', fileName);
+    const file = folder.createFile(fileBlob);
+    Logger.log('PDF uploaded to Google Drive: ' + file.getName());
 
-        const fileName = `Requisition_${requisitionNo}.pdf`;
-        const fileBlob = Utilities.newBlob(Utilities.base64Decode(pdfBase64), 'application/pdf', fileName);
-        const file = folder.createFile(fileBlob);
-        Logger.log('PDF uploaded to Google Drive: ' + file.getName());
+    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+    const fileUrl = file.getUrl();
+    Logger.log('Shareable link: ' + fileUrl);
 
-        file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
-        const fileUrl = file.getUrl();
-        Logger.log('Shareable link: ' + fileUrl);
+    const logSheet = getSheet(CONFIG.LOG_SHEET_NAME);
+    if (!logSheet) throw new Error(`Sheet '${CONFIG.LOG_SHEET_NAME}' not found.`);
 
-        const logSheet = SpreadsheetApp
-            .openById('10BHEHZrXtgIpfVqIJBLZvFGuavw2ge-Xr6GCDNycAs4')
-            .getSheetByName('Sheet2');
+    logSheet.appendRow([currentDate, requisitionNo, branchName, branchCode, fileUrl, requisitionBy]);
+    Logger.log(`Details logged in '${CONFIG.LOG_SHEET_NAME}'.`);
 
-        if (!logSheet) throw new Error('Sheet2 not found. Please check the sheet name.');
-
-        logSheet.appendRow([currentDate, requisitionNo, branchName, branchCode, fileUrl, requisitionBy]);
-        Logger.log('Details logged in Sheet2 with email.');
-
-        return {
-            success: true,
-            pdfBase64: pdfBase64,
-            message: 'Requisition saved and PDF uploaded successfully!'
-        };
-    } catch (error) {
-        Logger.log('Error in saveRequisition: ' + error.toString());
-        return {
-            success: false,
-            message: 'Failed to process the requisition. Please try again. Error: ' + error.message
-        };
-    }
+    return {
+      success: true,
+      pdfBase64: pdfBase64,
+      message: 'Requisition saved and PDF uploaded successfully!'
+    };
+  } catch (error) {
+    Logger.log('Error in saveRequisition: ' + error.toString());
+    return {
+      success: false,
+      message: 'Failed to process the requisition. Please try again. Error: ' + error.message
+    };
+  }
 }
 
+// =================================================================
+// HELPER FUNCTIONS
+// =================================================================
 
+/**
+ * Generates a unique requisition number.
+ * @param {string} branchCode The code of the branch.
+ * @returns {string} The generated requisition number.
+ */
 function generateRequisitionNo(branchCode) {
-    const lock = LockService.getScriptLock();
-    lock.waitLock(10000);
-    const props = PropertiesService.getScriptProperties();
-    let lastId = parseInt(props.getProperty('lastRequisitionId') || '0') + 1;
-    props.setProperty('lastRequisitionId', lastId);
-    lock.releaseLock();
-    return `RALH-${branchCode}-${String(lastId).padStart(8, '0')}`;
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  const props = PropertiesService.getScriptProperties();
+  let lastId = parseInt(props.getProperty('lastRequisitionId') || '0') + 1;
+  props.setProperty('lastRequisitionId', lastId);
+  lock.releaseLock();
+  return `RALH-${branchCode}-${String(lastId).padStart(8, '0')}`;
 }
 
+/**
+ * Creates a PDF from the requisition data.
+ * @param {Array} data The requisition data.
+ * @param {string} branchName The name of the branch.
+ * @param {string} branchCode The code of the branch.
+ * @param {string} requisitionNo The requisition number.
+ * @param {string} currentDate The current date.
+ * @param {string} requisitionBy The name of the person making the requisition.
+ * @returns {string} The base64 encoded PDF.
+ */
 function createPdf(data, branchName, branchCode, requisitionNo, currentDate, requisitionBy) {
-    const htmlTemplate = `
+  const htmlTemplate = `
         <html>
         <head>
             <style>
@@ -206,6 +245,16 @@ function createPdf(data, branchName, branchCode, requisitionNo, currentDate, req
         </html>
     `;
 
-    const blob = Utilities.newBlob(htmlTemplate, MimeType.HTML, 'temp.html').getAs('application/pdf');
-    return Utilities.base64Encode(blob.getBytes());
+  const blob = Utilities.newBlob(htmlTemplate, MimeType.HTML, 'temp.html').getAs('application/pdf');
+  return Utilities.base64Encode(blob.getBytes());
+}
+
+/**
+ * Gets a sheet by its name from the configured spreadsheet.
+ * @param {string} sheetName The name of the sheet to get.
+ * @returns {Sheet} The sheet object.
+ */
+function getSheet(sheetName) {
+  const spreadsheet = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+  return spreadsheet.getSheetByName(sheetName);
 }
