@@ -12,43 +12,78 @@
         integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
+        :root {
+            --primary: #0d47a1;
+            --secondary: #A62C2C;
+            --btn: #3E5F44;
+            --bg: #f5f7fa;
+            --card-bg: #ffffff;
+            --text: #212529;
+            --muted: #6c757d;
+            --border: #e0e6ed;
+            --shadow: 0 8px 24px rgba(0, 0, 0, .08);
+            --radius: 12px;
+            --font: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
         body {
-            background-color: #f8f9fa;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            font-family: var(--font);
+            color: var(--text);
         }
 
         .container {
-            background-color: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, .1);
-            padding: 2rem;
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 2.5rem;
             position: relative;
-            max-width: 1300px;
+            max-width: 1400px;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
         }
 
         .logo {
-            max-width: 400px;
+            max-width: 350px;
             margin-bottom: 1.5rem;
         }
 
-        .form-control {
-            border: 1px solid #ced4da;
-            border-radius: 6px;
-            transition: border-color .2s ease, box-shadow .2s ease;
-            padding: .5rem;
-            font-size: .9rem;
+        h2,
+        h3 {
+            color: var(--primary);
+            font-weight: 600;
         }
 
-        .form-control:focus {
-            border-color: #0d6efd;
-            box-shadow: 0 0 0 .2rem rgba(13, 110, 253, .25);
+        .form-control,
+        .form-select {
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            transition: border-color .2s ease, box-shadow .2s ease;
+            padding: .75rem 1rem;
+            font-size: .95rem;
+            background-color: #fff;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 .25rem rgba(13, 71, 161, .25);
+        }
+
+        .input-group-text {
+            background-color: #e9ecef;
+            border: 1px solid var(--border);
+            border-radius: var(--radius) 0 0 var(--radius);
         }
 
         .table-responsive {
-            max-height: 400px;
+            max-height: 450px;
             overflow-y: auto;
-            border-radius: 8px;
-            border: 1px solid #dee2e6;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
         }
 
         .table {
@@ -61,134 +96,107 @@
             position: sticky;
             top: 0;
             z-index: 1;
-            padding: .75rem;
-            border-bottom: 3px solid #ff0000;
+            padding: 1rem;
+            background-color: var(--primary);
+            color: white;
+            font-weight: 600;
+            border-bottom: 0;
+        }
+
+        .table thead th:first-child {
+            border-top-left-radius: var(--radius);
+        }
+
+        .table thead th:last-child {
+            border-top-right-radius: var(--radius);
         }
 
         .table td {
-            padding: .5rem;
+            padding: .75rem 1rem;
             vertical-align: middle;
+            border-top: 1px solid var(--border);
         }
 
-        .course-type-column {
-            width: 15%;
-        }
-
-        .item-column {
-            width: 15%;
-        }
-
-        .level-column {
-            width: 10%;
-        }
-
-        .batch-no-column {
-            width: 15%;
-        }
-
-        .quantity-column {
-            width: 10%;
-        }
-
-        .remarks-column {
-            width: 25%;
-        }
-
-        .action-column {
-            width: auto;
+        .table tbody tr:last-child td {
+            border-bottom: 0;
         }
 
         .action-btn {
-            padding: .25rem .5rem;
-            font-size: .85rem;
-            border-radius: 4px;
-            transition: background-color .2s ease, transform .1s ease;
+            padding: .3rem .6rem;
+            font-size: .9rem;
+            border-radius: var(--radius);
+            transition: all .2s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, .05);
         }
+
+
+
+        .btn-success {
+            background-color: var(--btn);
+            border-color: var(--btn);
+        }
+
+
+        .btn-danger {
+            background-color: var(--secondary);
+            border-color: var(--secondary);
+        }
+
+
 
         .progress {
-            height: 1.9rem;
-            text-align: center;
+            height: 2rem;
             font-size: 1rem;
-            margin-top: 16px;
-        }
-
-        .download-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-        }
-
-        .form-floating>.form-control {
-            padding-left: 2.5rem;
-        }
-
-        .form-floating>.bi {
-            position: absolute;
-            left: .75rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #6c757d;
+            border-radius: var(--radius);
         }
 
         .floating-alert {
             position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            top: 20px;
+            right: 20px;
             z-index: 1055;
-            min-width: 300px;
-            max-width: 400px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, .2);
-            opacity: 0;
-            transition: opacity .5s ease-in-out, transform .5s ease-in-out;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 0;
         }
 
-        .floating-alert.show {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
-            animation: slideIn .5s ease-in-out forwards;
+        .modal-content {
+            border-radius: var(--radius);
+            border: 0;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, .15);
         }
 
-        .floating-alert.hide {
-            animation: slideOut .5s ease-in-out forwards;
+        .modal-header {
+            background-color: var(--primary);
+            color: white;
+            border-bottom: 0;
+            border-top-left-radius: var(--radius);
+            border-top-right-radius: var(--radius);
         }
 
-        @keyframes slideIn {
-            0% {
-                opacity: 0;
-                transform: translate(-50%, -60%) scale(.9);
-            }
-
-            100% {
-                opacity: 1;
-                transform: translate(-50%, -50%) scale(1);
-            }
+        .modal-header .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%);
         }
 
-        @keyframes slideOut {
-            0% {
-                opacity: 1;
-                transform: translate(-50%, -50%) scale(1);
-            }
-
-            100% {
-                opacity: 0;
-                transform: translate(-50%, -40%) scale(.9);
-            }
-        }
-
-        .alert-dismissible .btn-close {
-            z-index: 1060;
-        }
-
-        .spinner-container {
-            display: inline-flex;
-            align-items: center;
-            gap: .5rem;
+        .modal-title {
+            font-weight: 600;
         }
 
         footer {
-            margin-top: 5rem
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+        }
+
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -197,7 +205,6 @@
     <div class="container text-center">
         <img src="https://www.alohabdonline.com/wp-content/uploads/2020/04/ALOHA-Logo-800-px-X-180-px.png"
             alt="ALOHA Logo" class="logo img-fluid mx-auto d-block">
-        <h2 class="h4 mb-3">ALOHA Bangladesh</h2>
         <h3 class="h5 mb-4">Class Room Supplies Requisition Slip</h3>
         <div id="rowLimitAlert" class="alert alert-warning alert-dismissible fade d-none floating-alert" role="alert">
             <i class="fa-regular fa-circle-exclamation me-2"></i>
@@ -210,7 +217,7 @@
             <div class="d-flex justify-content-between mb-4">
                 <div class="mb-3 w-25 me-2">
                     <div class="input-group">
-                        <span class="input-group-text"><i class="fa-solid fa-location-dot text-success"></i></span>
+                        <span class="input-group-text rounded-start"><i class="fa-solid fa-location-dot text-success"></i></span>
                         <input type="text" class="form-control" id="branchName" name="branchName"
                             list="branchSuggestions" placeholder="Enter branch name" aria-label="Branch Name" required>
                         <datalist id="branchSuggestions"></datalist>
@@ -220,7 +227,7 @@
                     <div class="input-group">
                         <input type="text" id="branchCodeDisplay" class="form-control" readonly
                             style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important;">
-                        <span class="input-group-text"><i class="fa-solid fa-hashtag"></i></span>
+                        <span class="input-group-text rounded-end"><i class="fa-solid fa-hashtag"></i></span>
                     </div>
                 </div>
             </div>
@@ -228,13 +235,13 @@
                 <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th class="course-type-column bg-primary text-light">Course Type</th>
-                            <th class="item-column bg-primary text-light">Item</th>
-                            <th class="level-column bg-primary text-light">Level</th>
-                            <th class="batch-no-column bg-primary text-light">Batch No</th>
-                            <th class="quantity-column bg-primary text-light">Quantity</th>
-                            <th class="remarks-column bg-primary text-light">Remarks</th>
-                            <th class="action-column bg-primary text-light">Action</th>
+                            <th>Course Type</th>
+                            <th>Item</th>
+                            <th>Level</th>
+                            <th>Batch No</th>
+                            <th>Quantity</th>
+                            <th>Remarks</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody id="requisitionTable"></tbody>
@@ -245,19 +252,20 @@
                     <div class="form-floating position-relative">
                         <input type="text" autocomplete="off" name="requisitionBy" class="form-control"
                             id="requisitionBy" placeholder="Requisition By" aria-label="Requisition By" required>
-                        <label for="requisitionBy"><i class="fa-solid fa-user text-primary"></i> Requisition By</label>
+                        <label for="requisitionBy"><i class="fa-solid fa-user"></i> Requisition By</label>
                     </div>
                 </div>
             </div>
             <div class="text-center mt-4">
                 <div id="saveBtnContainer" class="d-flex justify-content-center gap-2">
-                    <button type="button" id="savePdfBtn" class="btn btn-success">
-                        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
-                        <i class="fa-regular fa-file-pdf"></i> Save & Download PDF
+                    <button type="button" id="savePdfBtn" class="btn btn-success btn-lg">
+                        <span class="spinner-border spinner-border-sm d-none me-2" role="status"
+                            aria-hidden="true"></span>
+                        <i class="fa-regular fa-file-pdf me-2"></i> Save & Download PDF
                     </button>
-                    <button type="button" id="clearFormBtn" class="btn btn-outline-danger" data-bs-toggle="modal"
+                    <button type="button" id="clearFormBtn" class="btn btn-danger btn-lg" data-bs-toggle="modal"
                         data-bs-target="#clearConfirmModal">
-                        <i class="fa-solid fa-trash"></i> Clear Form
+                        <i class="fa-solid fa-trash me-2"></i> Clear Form
                     </button>
                 </div>
                 <div id="processingMessage" class="d-none mt-3">
@@ -279,7 +287,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="successModalLabel"><i
-                                    class="fa-regular fa-circle-exclamation text-success me-2"></i>Success</h5>
+                                    class="fa-regular fa-circle-check me-2"></i>Success</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body" id="successMessage">
@@ -295,7 +303,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="errorModalLabel"><i
-                                    class="fa-regular fa-circle-exclamation text-danger me-2"></i>Error</h5>
+                                    class="fa-solid fa-circle-xmark me-2"></i>Error</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body" id="errorMessage">
@@ -311,7 +319,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="confirmModalLabel"><i
-                                    class="fa-solid fa-circle-question text-primary me-2"></i>Confirm Submission</h5>
+                                    class="fa-solid fa-circle-question me-2"></i>Confirm Submission</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
@@ -333,7 +341,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="clearConfirmModalLabel"><i
-                                    class="fa-solid fa-circle-question text-warning me-2"></i>Confirm Clear Form</h5>
+                                    class="fa-solid fa-triangle-exclamation me-2"></i>Confirm Clear Form</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
@@ -346,26 +354,16 @@
                     </div>
                 </div>
             </div>
-
-            <footer class="text-center">
-                <div class=" d-flex flex-column flex-md-row justify-content-md-between align-items-center">
-                    <div class="mb-2 mb-md-0">
-                        <p class="mb-1 fs-6">Developed by <b class="text-dark">Md Bashir Ahmed &#129505;</b>, Officer-IT
-                        </p>
-                        <p class="mb-0 fs-6">ALOHA Bangladesh</p>
-                    </div>
-
-                    <div>
-                        <p class="mb-0 ">
-                            <a href="https://www.linkedin.com/in/bashir-6923131b0/" target="_blank"
-                                class=" text-decoration-none " aria-label="Visit LinkedIn profile">
-                                <i class="fab fa-linkedin"></i> LinkedIn
-                            </a>
-                            <span class="text-dark">|</span>
-                            <span class="text-dark fs-6">Open to your thoughts and feedback.</span>
-                        </p>
-                    </div>
-                </div>
+            <footer class="text-center mt-5">
+                <p class="mb-1">Developed by <strong>Md Bashir Ahmed</strong>, Officer-IT — ALOHA Bangladesh</p>
+                <p class="mb-0">
+                    <a href="https://www.linkedin.com/in/bashir-6923131b0/" target="_blank"
+                        class="text-decoration-none">
+                        <i class="fab fa-linkedin"></i> LinkedIn
+                    </a>
+                    <span class="mx-2">|</span>
+                    <span>Open to your thoughts and feedback.</span>
+                </p>
             </footer>
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
                 integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
