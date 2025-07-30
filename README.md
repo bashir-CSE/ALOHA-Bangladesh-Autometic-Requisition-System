@@ -1,6 +1,6 @@
 # ALOHA Bangladesh - Automatic Requisition System
 
-**GitHub Repository:** [https://github.com/bashir-CSE/ALOHA-Bangladesh-Autometic-Requisition-System](https://github.com/bashir-CSE/ALOHA-Bangladesh-Autometic-Requisition-System)
+**Live Demo Link:** [https://script.google.com/macros/s/AKfycbzO3zZcb_2WIq0C_QXcD2hsQp-_SrAXeqFeUO0SJZeUcBiRbJPGgR6rcozyVNzApeTa/exec](https://script.google.com/macros/s/AKfycbzO3zZcb_2WIq0C_QXcD2hsQp-_SrAXeqFeUO0SJZeUcBiRbJPGgR6rcozyVNzApeTa/exec)
 
 This project is a web-based automatic requisition system for ALOHA Bangladesh, designed to streamline the process of requesting classroom supplies. It's built using Google Apps Script and a web front-end, allowing branches to submit requisitions easily. The system automatically generates a PDF of the requisition, saves it to a designated Google Drive folder, and logs the details in a Google Sheet.
 
