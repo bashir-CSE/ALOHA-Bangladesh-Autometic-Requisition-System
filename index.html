@@ -13,9 +13,9 @@
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         :root {
-            --primary: #0d47a1;
-            --secondary: #A62C2C;
-            --btn: #3E5F44;
+            --primary: #0A2E6E;
+            --secondary: #D8151A;
+            --btn: #006738;
             --bg: #f5f7fa;
             --card-bg: #ffffff;
             --text: #212529;
@@ -117,6 +117,30 @@
             border-top: 1px solid var(--border);
         }
 
+        .course-type-column {
+            width: 12%;
+        }
+
+        .item-column {
+            width: 23%;
+        }
+
+        .level-column {
+            width: 10%;
+        }
+
+        .batch-no-column {
+            width: 10%;
+        }
+
+        .quantity-column {
+            width: 10%;
+        }
+
+        .remarks-column {
+            width: 25%;
+        }
+
         .table tbody tr:last-child td {
             border-bottom: 0;
         }
@@ -145,9 +169,10 @@
 
 
         .progress {
-            height: 2rem;
+            height: 1.4rem;
             font-size: 1rem;
             border-radius: var(--radius);
+            font-style: italic;
         }
 
         .floating-alert {
@@ -184,7 +209,7 @@
 
         footer {
             margin-top: 2rem;
-            padding-top: 1.5rem;
+            padding-top: 1rem;
             border-top: 1px solid var(--border);
             color: var(--muted);
         }
@@ -219,13 +244,13 @@
                     <div class="input-group">
                         <span class="input-group-text rounded-start"><i class="fa-solid fa-location-dot text-success"></i></span>
                         <input type="text" class="form-control" id="branchName" name="branchName"
-                            list="branchSuggestions" placeholder="Enter branch name" aria-label="Branch Name" required>
+                            list="branchSuggestions" placeholder="Select branch name" aria-label="Branch Name" required>
                         <datalist id="branchSuggestions"></datalist>
                     </div>
                 </div>
                 <div class="mb-3 w-25 ms-2">
                     <div class="input-group">
-                        <input type="text" id="branchCodeDisplay" class="form-control" readonly
+                        <input type="text" id="branchCodeDisplay" class="form-control" readonly placeholder="Branch Code"
                             style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important;">
                         <span class="input-group-text rounded-end"><i class="fa-solid fa-hashtag"></i></span>
                     </div>
@@ -235,13 +260,13 @@
                 <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th>Course Type</th>
-                            <th>Item</th>
-                            <th>Level</th>
-                            <th>Batch No</th>
-                            <th>Quantity</th>
-                            <th>Remarks</th>
-                            <th>Action</th>
+                            <th class="course-type-column ">Course Type</th>
+                            <th class="item-column ">Item</th>
+                            <th class="level-column ">Level</th>
+                            <th class="batch-no-column ">Batch No</th>
+                            <th class="quantity-column ">Quantity</th>
+                            <th class="remarks-column ">Remarks</th>
+                            <th class="action-column ">Action</th>
                         </tr>
                     </thead>
                     <tbody id="requisitionTable"></tbody>
@@ -273,7 +298,7 @@
                         <div class="progress w-75">
                             <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary"
                                 role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0"
-                                aria-valuemax="100">Processing...</div>
+                                aria-valuemax="100">Requisition Processing...</div>
                         </div>
                     </div>
                 </div>
@@ -356,10 +381,10 @@
             </div>
             <footer class="text-center mt-5">
                 <p class="mb-1">Developed by <strong>Md Bashir Ahmed</strong>, Officer-IT — ALOHA Bangladesh</p>
-                <p class="mb-0">
+                <p class="mb-0 ">
                     <a href="https://www.linkedin.com/in/bashir-6923131b0/" target="_blank"
-                        class="text-decoration-none">
-                        <i class="fab fa-linkedin"></i> LinkedIn
+                        class="text-decoration-none text-primary">
+                        <i class="fab fa-linkedin text-primary me-1 fs-3"></i> LinkedIn
                     </a>
                     <span class="mx-2">|</span>
                     <span>Open to your thoughts and feedback.</span>
@@ -445,29 +470,29 @@
                     const row = document.createElement('tr');
                     row.innerHTML = `
                 <td class="course-type-column">
-                    <input type="text" name="courseType" class="form-control" list="courseTypeSuggestions_${rowCount}" placeholder="Enter course type" aria-label="Course Type" required>
+                    <input type="text" name="courseType" class="form-control" list="courseTypeSuggestions_${rowCount}"  aria-label="Course Type" required>
                     <datalist id="courseTypeSuggestions_${rowCount}">
                         <option value="Senior">
                         <option value="Junior">
                     </datalist>
                 </td>
                 <td class="item-column">
-                    <input type="text" name="item" class="form-control" list="itemSuggestions_${rowCount}" placeholder="Enter item" aria-label="Item" required>
+                    <input type="text" name="item" class="form-control" list="itemSuggestions_${rowCount}"  aria-label="Item" required>
                     <datalist id="itemSuggestions_${rowCount}">
                         ${itemNames.map(item => `<option value="${item}">`).join('')}
                     </datalist>
                 </td>
                 <td class="level-column">
-                    <input type="text" name="level" class="form-control" placeholder="Enter level" aria-label="Level" required>
+                    <input type="number" type="text" name="level" class="form-control"  aria-label="Level" required>
                 </td>
                 <td class="batch-no-column">
-                    <input type="text" name="batchNo" class="form-control" placeholder="Enter batch no" aria-label="Batch Number" required>
+                    <input type="number" type="text" name="batchNo" class="form-control"  aria-label="Batch Number" required>
                 </td>
                 <td class="quantity-column">
-                    <input type="number" name="quantity" class="form-control" min="1" placeholder="Qty" aria-label="Quantity" required>
+                    <input type="number" name="quantity" class="form-control" min="1"  aria-label="Quantity" required>
                 </td>
                 <td class="remarks-column">
-                    <input type="text" name="remarks" class="form-control" placeholder="Remarks" aria-label="Remarks">
+                    <input type="text" name="remarks" class="form-control"  aria-label="Remarks">
                 </td>
                 <td class="action-column d-flex justify-content-center align-items-center gap-2">
                     <button type="button" class="action-btn btn btn-sm btn-success add-btn" onclick="addRow()" aria-label="Add a new row to the requisition table">
