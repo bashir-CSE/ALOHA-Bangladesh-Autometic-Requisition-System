@@ -14,28 +14,6 @@ This project is a web-based automatic requisition system for ALOHA Bangladesh, d
 - **Unique Requisition ID:** Each requisition is assigned a unique ID for easy identification.
 - **Responsive Design:** The web interface is designed to be responsive and works on various devices.
 
-## Setup and Deployment
-
-To use this system, you need to:
-
-1.  **Create a Google Sheet:**
-    *   Create a new Google Sheet with the following sheets:
-        *   `Sheet1`: To store the raw requisition data.
-        *   `Sheet2`: To log the requisition details and PDF links.
-        *   `Sheet3`: To store the list of branches, branch codes, and items.
-    *   Update the `spreadsheetId` in the `Code.gs` file with the ID of your Google Sheet.
-
-2.  **Create a Google Drive Folder:**
-    *   Create a folder in Google Drive where the generated PDFs will be stored.
-    *   Update the `folderId` in the `Code.gs` file with the ID of your Google Drive folder.
-
-3.  **Deploy as a Web App:**
-    *   Open the Google Apps Script editor.
-    *   Go to `Deploy` > `New deployment`.
-    *   Select `Web app` as the deployment type.
-    *   Configure the web app settings, ensuring that it is accessible to the intended users.
-    *   Deploy the web app. You will get a URL that you can share with the users.
-
 ## Usage
 
 1.  Open the web app URL in a browser.
